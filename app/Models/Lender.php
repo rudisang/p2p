@@ -18,6 +18,6 @@ class Lender extends Model
     }
 
     protected $fillable = [
-        'company_name', 'category', 'description', 'phone', 'verified'
+        'interest','company_name', 'category', 'description', 'phone', 'verified'
     ];
 }

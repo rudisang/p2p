@@ -9,6 +9,7 @@
 @endif
 
 
+
 @section('content')
 <div class="container">
 
@@ -22,6 +23,14 @@
       </div>
     @endif
   @endif
+  @if(Session::has('error'))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>You have an unresolved loan with this company. </strong>.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+@endif
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -29,7 +38,7 @@
                 
                 <div class="card-body">
                     @if(Auth::user()->lenders)
-                    <a href="#" class="btn btn-warning">View Profile</a>
+                <h2>{{Auth::user()->lenders->company_name}}</h2>
                     @else
                     <a href="lenders/create" class="btn btn-info">Become Lender</a>
                     @endif
@@ -44,7 +53,7 @@
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header"><input type="search" class="form-control" placeholder="search"></div>
+            <div class="card-header"><form action="/home" method="get"><input type="search" name="search" class="form-control" placeholder="search"></form></div>
             
             <div class="card-body">
                 <div class="row">
@@ -58,10 +67,25 @@
                               <h5 class="card-title">{{$a->company_name}}</h5>
                               <p class="card-text">{{$a->category}}.</p>
                               
-                              <!-- Button trigger modal -->
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{str_replace(' ', '', $a->company_name)}}">
-                                   Apply
+                              @if(Auth::user()->lenders != null)
+                                @if(Auth::user()->lenders->company_name == $a->company_name)
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-warning" disabled>
+                                    Edit
                                 </button>
+                                @else
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{str_replace(' ', '', $a->company_name)}}">
+                                        Apply
+                                    </button>
+                                @endif
+                              @else
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{str_replace(' ', '', $a->company_name)}}">
+                                    Apply
+                                </button>
+                              @endif
+                             
                                 
                               
                             </div>
@@ -147,10 +171,53 @@
                         <small>{{$apps->created_at->diffForHumans()}}</small>
                         <h5 class="card-title">Pending </h5>
                       <p class="card-text">Amount: {{$apps->amount}} <br> Plan: {{$apps->plan}} <br> {{$apps->user->name}} <br>  <form method="post" action="/applications/{{$apps->id}}">@method('PATCH')
-                        @csrf<input type="submit" value="approve" class="btn btn-success"></form></p>
+                        @csrf<input type="submit" value="approve" class="btn btn-success"></form>  <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#{{str_replace(' ', '', $apps->user->name)}}">
+                           view
+                        </button></p>
                         
                        
                           
+                        
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal fade" id="{{str_replace(' ', '', $apps->user->name)}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Applicant Profile</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                            <strong>Names: </strong>{{$apps->user->name}}
+                            {{$apps->user->surname}}
+                            <br><strong>ID: </strong>{{$apps->user->omang}}
+                            <br><strong>Occupation: </strong>{{$apps->user->occupation}}
+                            <br><strong>Salary: </strong>BWP{{$apps->user->salary}}/Yr
+                            <hr>
+                            <br><strong>Gender: </strong>{{$apps->user->gender}}
+                            <br><strong>Address: </strong>{{$apps->user->address}}
+                        <br><strong>Proof of Residence: </strong><img width="150" src="/storage/residences/{{$apps->user->residence}}" alt="">
+                        <br><strong>Phone: </strong>{{$apps->user->phone}}
+
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  @else
+                  <div class="col-sm-4">
+                    <div class="card">
+                      <div class="card-body">
+                        <small>{{$apps->created_at->diffForHumans()}}</small>
+                        <h5 class="card-title">Approved</h5>
+                      <p class="card-text">Amount: {{$apps->amount}} <br> Plan: {{$apps->plan}} <br> by: {{$apps->user->name}} <br> Omang: {{$apps->user->omang}} </p>
                         
                       </div>
                     </div>

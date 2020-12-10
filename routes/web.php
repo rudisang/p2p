@@ -21,7 +21,7 @@ Auth::routes();
 
 Route::resource('/lenders', 'App\Http\Controllers\LenderController');
 
-Route::resource('/applications', 'App\Http\Controllers\ApplicationController@create');
+Route::resource('/applications', 'App\Http\Controllers\ApplicationController');
 
 
 

@@ -48,6 +48,11 @@ class ApplicationController extends Controller
          $app->isApproved = false;
          $app->isPending = true;
          
+         $check = Application::where('user_id', '=', auth()->user()->id)->where('lender_id', $request->input('lender_id'))->get();
+         
+         if (!$check == "") {
+            return redirect('/home')->with('error', 'You have already applied for a loan');
+        }
          $app->save();
  
          return redirect('/home')->with('success', 'Application successful');

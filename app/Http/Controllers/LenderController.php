@@ -36,6 +36,7 @@ class LenderController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
+            'interest' => 'required',
             'company_name' =>'required|string|max:255',
             'category' =>'required|string|max:255',
             'description' =>'required',
@@ -44,6 +45,7 @@ class LenderController extends Controller
         ]);
          // Create lender
          $lender = new Lender;
+         $lender->interest = $request->input('interest');
          $lender->company_name = $request->input('company_name');
          $lender->category = $request->input('category');
          $lender->description = $request->input('description');

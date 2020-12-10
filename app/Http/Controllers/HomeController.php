@@ -28,10 +28,17 @@ class HomeController extends Controller
     {
         $user_id = auth()->user()->id;
         $user = User::find($user_id);
-        $ld = Lender::orderBy('created_at','desc')->paginate(10);
+
+        if(request()->has('search')){
+            $search = request()->get('search');
+            $ld = Lender::where('company_name', 'like', '%'.$search.'%')->orderBy('created_at','desc')->paginate(10);
+          }else{        $ld = Lender::orderBy('created_at','desc')->paginate(10);
+          }
+
         if($user->lenders){
             return view('home')->with('ld', $ld)->with('lenders', $user->lenders)->with('applications', $user->applications)->with('loanapps', $user->lenders->applications);
         }else{
+            
             return view('home')->with('ld', $ld)->with('lenders', $user->lenders)->with('applications', $user->applications);
         }
         

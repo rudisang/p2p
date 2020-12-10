@@ -18,6 +18,7 @@ class CreateLendersTable extends Migration
             $table->string('company_name');
             $table->string('category');
             $table->text('description');
+            $table->string('interest');
             $table->string('phone');
             $table->boolean('verified');
             $table->integer('user_id');

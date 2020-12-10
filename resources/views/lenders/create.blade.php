@@ -7,6 +7,19 @@
             @csrf
 
             <div class="form-group row">
+                <label for="interest" class="col-md-4 col-form-label text-md-right">{{ __('Interest Rate') }}</label>
+
+                <div class="col-md-6">
+                    <input id="interest" type="text" class="form-control @error('interest') is-invalid @enderror" name="interest" value="{{ old('interest') }}" required autofocus>
+
+                    @error('interest')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+            </div>
+            <div class="form-group row">
                 <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Company Name') }}</label>
 
                 <div class="col-md-6">
